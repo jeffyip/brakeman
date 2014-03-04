@@ -43,6 +43,10 @@ module Brakeman::Options
           options[:exit_on_warn] = true
         end
 
+        opts.on( "-y", "--exit-on-new-warnings-only", "Exit code is non-zero only if new warnings found") do
+          options[:exit_on_new_warnings_only] = true
+        end
+
         opts.on "-3", "--rails3", "Force Rails 3 mode" do
           options[:rails3] = true
         end

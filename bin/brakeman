@@ -70,7 +70,12 @@ begin
       puts MultiJson.dump(vulns, :pretty => true)
     end
 
-    if options[:exit_on_warn] and (vulns[:new].count + vulns[:fixed].count > 0)
+    if options[:exit_on_warn] && !options[:exit_on_new_warnings_only] &&
+      (vulns[:new].count + vulns[:fixed].count > 0)
+      exit Brakeman::Warnings_Found_Exit_Code
+    end
+
+    if options[:exit_on_new_warnings_only] && vulns[:new].count > 0
       exit Brakeman::Warnings_Found_Exit_Code
     end
   else
@@ -78,7 +83,7 @@ begin
     tracker = Brakeman.run options.merge(:print_report => true, :quiet => options[:quiet])
 
     #Return error code if --exit-on-warn is used and warnings were found
-    if options[:exit_on_warn] and not tracker.filtered_warnings.empty?
+    if (options[:exit_on_warn] || options[:exit_on_new_warnings_only]) and not tracker.filtered_warnings.empty?
       exit Brakeman::Warnings_Found_Exit_Code
     end
   end
